@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
     container_name: nginx
     ports:
-      - "80:80"
+      - "443:443"
     volumes:
       - ./requirements/nginx/html:/usr/share/nginx/html # persistência de páginas HTML
     restart: always
