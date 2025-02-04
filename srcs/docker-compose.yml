@@ -1,6 +1,22 @@
 version: '3.8'
 
+############## NETWORKS ############## 
+
+networks:
+  inception_network:
+    name: inception_network
+    driver: bridge
+
+##############  VOLUMES ##############
+
+volumes:
+  wordpress_data:
+
+##############  SERVICES ############## 
+
 services:
+
+  # service nginx: reverse proxy
   nginx:
     image: nginx:42project
     build:
@@ -11,13 +27,41 @@ services:
       - "443:443"
     volumes:
       - ./requirements/nginx/html:/usr/share/nginx/html # persistência de páginas HTML
-    # depends_on:
-    #   - wordpress
+    depends_on:
+      - wordpress
+    networks:
+      - inception_network
+    restart: always
 
-    # Começando a configurar o wordpress no projeto
+  # service wordpress: static website
+  wordpress:
+    image: wordpress:42project
+    build:
+      context: ./requirements/wordpress/
+      dockerfile: Dockerfile
+    container_name: wordpress
+    volumes:
+      - wordpress_data:/var/www/html
+    depends_on:
+      - db
+    networks:
+      - inception_network
+    restart: always
+    environment:
+      WORDPRESS_DB_HOST: db # placeholder
+      WORDPRESS_DB_USER: root # placeholder
+      WORDPRESS_DB_PASSWORD: root # placeholder
+      WORDPRESS_DB_NAME: wordpress # placeholder
 
-    # wordpress:
-    #   build:
-    #     context: ./requirements/wordpress/
-    #     dockerfile: Dockerfile
-    #   container_name: wordpress
+ ### service mariadb: database
+  db:
+    image: mariadb:latest
+    container_name: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+    networks:
+      - inception_network
+    restart: always
