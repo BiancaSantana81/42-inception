@@ -48,3 +48,5 @@ services:
       - mariadb_data:/var/lib/mysql
     networks:
       - inception_network
+    env_file:
+      - .env
