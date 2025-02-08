@@ -2,9 +2,13 @@ version: '3.8'
 
 ############## VOLUMES ##############
 
-# volumes:
+volumes:
 
-#   mariadb_data: {}
+  mariadb_data:
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/bsantana/data/mariadb
 
 ############## NETWORKS ############## 
 
@@ -40,7 +44,7 @@ services:
       context: ./requirements/mariadb
       dockerfile: Dockerfile
     container_name: mariadb
-    # volumes:
-    #   - mariadb_data
+    volumes:
+      - mariadb_data:/var/lib/mysql
     networks:
       - inception_network
