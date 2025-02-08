@@ -33,7 +33,6 @@ services:
       - inception_network
     restart: always
 
-  # service wordpress: static website
   wordpress:
     image: wordpress:42project
     build:
