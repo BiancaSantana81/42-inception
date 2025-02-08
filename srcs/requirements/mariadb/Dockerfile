@@ -9,5 +9,9 @@ RUN apt update -y && apt upgrade -y \
 RUN mkdir -p /var/run/mysqld \
     && chown -R mysql:mysql /var/run/mysqld
 
+COPY ./scripts/init.sh /tmp/script.sh
+
+RUN chmod 777 /tmp/script.sh && ./tmp/script.sh
+
 # Evita que o contêiner finalize imediatamente
 CMD ["mysqld_safe"]
