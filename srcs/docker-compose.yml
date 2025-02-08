@@ -1,5 +1,11 @@
 version: '3.8'
 
+############## VOLUMES ##############
+
+# volumes:
+
+#   mariadb_data: {}
+
 ############## NETWORKS ############## 
 
 networks:
@@ -25,3 +31,16 @@ services:
     networks:
       - inception_network
     restart: always
+
+# revisar configurações para mariadb e se o volume está configurado corretamente
+
+  mariadb:
+    image: mariadb:42project
+    build:
+      context: ./requirements/mariadb
+      dockerfile: Dockerfile
+    container_name: mariadb
+    # volumes:
+    #   - mariadb_data
+    networks:
+      - inception_network
