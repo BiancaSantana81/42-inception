@@ -1,5 +1,9 @@
 FROM debian:oldstable
 
+ARG DATABASE_NAME
+ARG DATABASE_USER
+ARG DATABASE_PASSWORD
+
 # Atualiza o sistema e instala o MariaDB
 RUN apt update -y && apt upgrade -y \
     && apt install -y mariadb-server \
@@ -9,9 +13,11 @@ RUN apt update -y && apt upgrade -y \
 RUN mkdir -p /var/run/mysqld \
     && chown -R mysql:mysql /var/run/mysqld
 
-COPY ./scripts/init.sh /tmp/script.sh
+COPY /conf/init.sh /tmp/script.sh
 
-RUN chmod 777 /tmp/script.sh && ./tmp/script.sh
+COPY /tools/my.cnf /etc/mysql/my.cnf
+
+RUN chmod 777 /tmp/script.sh && bash /tmp/script.sh
 
 # Evita que o contêiner finalize imediatamente
 CMD ["mysqld_safe"]
