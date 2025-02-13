@@ -13,11 +13,10 @@ RUN apt update -y && apt upgrade -y \
 RUN mkdir -p /var/run/mysqld \
     && chown -R mysql:mysql /var/run/mysqld
 
-COPY /conf/init.sh /tmp/script.sh
+COPY ./conf/run.sh /tmp/run.sh
 
-COPY /tools/my.cnf /etc/mysql/my.cnf
+# Torna o script executável
+RUN chmod +x /tmp/run.sh
 
-RUN chmod 777 /tmp/script.sh && bash /tmp/script.sh
-
-# Evita que o contêiner finalize imediatamente
-CMD ["mysqld_safe"]
+# Alterar o CMD para rodar o script de inicialização e manter o contêiner ativo
+CMD ["/bin/bash", "-c", "/tmp/run.sh && tail -f /dev/null"]

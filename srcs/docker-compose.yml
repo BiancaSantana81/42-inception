@@ -1,21 +1,20 @@
 #version: '3.8'
 
-############## VOLUMES ##############
-
-volumes:
-
-  mariadb_data:
-    driver_opts:
-      o: bind
-      type: none
-      device: /home/bsantana/data/mariadb
-
 ############## NETWORKS ############## 
 
 networks:
   inception_network:
     name: inception_network
     driver: bridge
+
+############## VOLUMES ################
+
+volumes:
+  mariadb_data:
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/bsantana/data/mariadb
 
 ##############  SERVICES ############## 
 
@@ -36,27 +35,23 @@ services:
       - inception_network
     restart: always
 
-# revisar configurações para mariadb e se o volume está configurado corretamente
-
+    # mariadb: serviço de banco de dados
   mariadb:
     image: mariadb:42project
     build:
-      context: ./requirements/mariadb
+      context: ./requirements/mariadb/
       dockerfile: Dockerfile
       args:
       - DATABASE_NAME=${DATABASE_NAME}
       - DATABASE_USER=${DATABASE_USER}
       - DATABASE_PASSWORD=${DATABASE_PASSWORD}
     container_name: mariadb
+    expose: # ainda não sei se isto está correto
+      - "3306"
     volumes:
       - mariadb_data:/var/lib/mysql
     networks:
       - inception_network
-    environment:
-      - DATABASE_NAME
-      - DATABASE_USER
-      - DATABASE_PASSWORD
     env_file:
       - .env
-    expose:
-      - 3306
+    restart: always

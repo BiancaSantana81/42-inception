@@ -1,6 +1,10 @@
 #!/bin/bash
 
+# Start MariaDB
+
 service mariadb start
+
+# Create database and user
 
 mysql -u root -e "
     CREATE DATABASE IF NOT EXISTS ${DATABASE_NAME};
