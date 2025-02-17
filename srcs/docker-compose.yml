@@ -72,8 +72,6 @@ services:
     build:
       context: ./requirements/wordpress/
       dockerfile: Dockerfile
-      # args:
-      #   - name=value
     expose:
       - 9000
     volumes:

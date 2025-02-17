@@ -9,7 +9,7 @@ RUN openssl req -batch -x509 -sha256 -nodes -newkey rsa:2048 -days 365 \
 	-out /etc/ssl/certs/bsantana.crt \
 	-subj "/C=Br/ST=SP/L=Sao Paulo/O=42sp/CN=bsantana.42.fr"
 
-### REMOVER NO FINAL APENAS PARA LOGS
+### REMOVER NO FINAL APENAS PARA
 
 RUN apt update && apt install iputils-ping curl -y
 
