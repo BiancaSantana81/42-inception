@@ -7,6 +7,9 @@ RUN apt update -y && apt upgrade -y \
     && apt install -y php7.4 php-fpm php-mysql wget -y \
     && rm -rf /var/lib/apt/lists/*
 
+# Alterar o listen do PHP-FPM
+RUN echo "listen = 0.0.0.0:9000" >> /etc/php/7.4/fpm/pool.d/www.conf
+
 # Criar o diretório /run/php para o socket
 RUN mkdir -p /run/php
 

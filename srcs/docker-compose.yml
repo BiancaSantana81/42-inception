@@ -38,7 +38,7 @@ services:
     ports:
       - "443:443"
     volumes:
-      - ./requirements/nginx/html:/usr/share/nginx/html # persistência de páginas HTML
+      - wordpress_data:/var/www/html
     networks:
       - inception_network
     restart: always
