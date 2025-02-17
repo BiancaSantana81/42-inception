@@ -1,4 +1,4 @@
-version: '3.8'
+#version: '3.8'
 
 ############## NETWORKS ############## 
 
@@ -7,10 +7,20 @@ networks:
     name: inception_network
     driver: bridge
 
-##############  VOLUMES ##############
+############## VOLUMES ################
 
 volumes:
+  mariadb_data:
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/bsantana/data/mariadb
+  
   wordpress_data:
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/bsantana/data/wordpress
 
 ##############  SERVICES ############## 
 
@@ -18,49 +28,58 @@ services:
 
   # service nginx: reverse proxy
   nginx:
+    depends_on:
+      - wordpress
     image: nginx:42project
+    container_name: nginx
     build:
       context: ./requirements/nginx/
       dockerfile: Dockerfile
-    container_name: nginx
     ports:
       - "443:443"
     volumes:
       - ./requirements/nginx/html:/usr/share/nginx/html # persistência de páginas HTML
-    depends_on:
-      - wordpress
     networks:
       - inception_network
     restart: always
 
+    # mariadb: serviço de banco de dados
+  mariadb:
+    image: mariadb:42project
+    container_name: mariadb
+    build:
+      context: ./requirements/mariadb/
+      dockerfile: Dockerfile
+      args:
+      - DATABASE_NAME=${DATABASE_NAME}
+      - DATABASE_USER=${DATABASE_USER}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+    expose: # ainda não sei se isto está correto
+      - "3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    networks:
+      - inception_network
+    env_file:
+      - .env
+    restart: on-failure
+
   wordpress:
+    depends_on:
+      - mariadb
     image: wordpress:42project
+    container_name: wordpress
     build:
       context: ./requirements/wordpress/
       dockerfile: Dockerfile
-    container_name: wordpress
+      # args:
+      #   - name=value
+    expose:
+      - 9000
     volumes:
       - wordpress_data:/var/www/html
-    depends_on:
-      - db
     networks:
       - inception_network
-    restart: always
-    environment:
-      WORDPRESS_DB_HOST: db # placeholder
-      WORDPRESS_DB_USER: root # placeholder
-      WORDPRESS_DB_PASSWORD: root # placeholder
-      WORDPRESS_DB_NAME: wordpress # placeholder
-
- ### service mariadb: database
-  db:
-    image: mariadb:latest
-    container_name: mariadb
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: wordpress
-      MYSQL_USER: root
-      MYSQL_PASSWORD: root
-    networks:
-      - inception_network
-    restart: always
+    env_file:
+      - .env
+    restart: on-failure
