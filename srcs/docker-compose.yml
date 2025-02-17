@@ -15,6 +15,12 @@ volumes:
       o: bind
       type: none
       device: /home/bsantana/data/mariadb
+  
+  wordpress_data:
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/bsantana/data/wordpress
 
 ##############  SERVICES ############## 
 
@@ -22,11 +28,13 @@ services:
 
   # service nginx: reverse proxy
   nginx:
+    depends_on:
+      - wordpress
     image: nginx:42project
+    container_name: nginx
     build:
       context: ./requirements/nginx/
       dockerfile: Dockerfile
-    container_name: nginx
     ports:
       - "443:443"
     volumes:
@@ -38,6 +46,7 @@ services:
     # mariadb: serviço de banco de dados
   mariadb:
     image: mariadb:42project
+    container_name: mariadb
     build:
       context: ./requirements/mariadb/
       dockerfile: Dockerfile
@@ -45,7 +54,6 @@ services:
       - DATABASE_NAME=${DATABASE_NAME}
       - DATABASE_USER=${DATABASE_USER}
       - DATABASE_PASSWORD=${DATABASE_PASSWORD}
-    container_name: mariadb
     expose: # ainda não sei se isto está correto
       - "3306"
     volumes:
@@ -54,4 +62,24 @@ services:
       - inception_network
     env_file:
       - .env
-    restart: always
+    restart: on-failure
+
+  wordpress:
+    depends_on:
+      - mariadb
+    image: wordpress:42project
+    container_name: wordpress
+    build:
+      context: ./requirements/wordpress/
+      dockerfile: Dockerfile
+      # args:
+      #   - name=value
+    expose:
+      - 9000
+    volumes:
+      - wordpress_data:/var/www/html
+    networks:
+      - inception_network
+    env_file:
+      - .env
+    restart: on-failure
