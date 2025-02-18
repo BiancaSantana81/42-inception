@@ -24,6 +24,10 @@ RUN apt update -y && apt upgrade -y \
     && apt install -y php7.4 php-fpm php-mysql mariadb-client wget curl -y \
     && rm -rf /var/lib/apt/lists/*
 
+### REMOVER NO FINAL APENAS PARA TESTES
+RUN apt update && apt install iputils-ping curl -y
+RUN apt update && apt install net-tools
+
 RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
 
 RUN chmod +x wp-cli.phar && mv wp-cli.phar /usr/local/bin/wp

@@ -9,8 +9,7 @@ RUN openssl req -batch -x509 -sha256 -nodes -newkey rsa:2048 -days 365 \
 	-out /etc/ssl/certs/bsantana.crt \
 	-subj "/C=Br/ST=SP/L=Sao Paulo/O=42sp/CN=bsantana.42.fr"
 
-### REMOVER NO FINAL APENAS PARA
-
+### REMOVER NO FINAL APENAS PARA TESTES
 RUN apt update && apt install iputils-ping curl -y
 
 COPY	conf/nginx.conf /etc/nginx/conf.d
