@@ -1,21 +1,13 @@
 FROM debian:oldstable
 
-# Definir variáveis de ambiente
-ARG ADMIN_NAME
-ARG ADMIN_PASSWORD
-ARG DATABASE_NAME
-ARG DATABASE_USER
-ARG DATABASE_PASSWORD
-ARG DATABASE_HOST
-ARG DB_PREFIX
+# # Definir variáveis de ambiente
+# ARG ADMIN_NAME
+# ARG ADMIN_PASSWORD
+# ARG DATABASE_HOST
 
 ENV ADMIN_NAME=${ADMIN_NAME}
 ENV ADMIN_PASSWORD=${ADMIN_PASSWORD}
-ENV DATABASE_NAME=${DATABASE_NAME}
-ENV DATABASE_USER=${DATABASE_USER}
-ENV DATABASE_PASSWORD=${DATABASE_PASSWORD}
 ENV DATABASE_HOST=${DATABASE_HOST}
-ENV DB_PREFIX=${DB_PREFIX}
 
 WORKDIR /var/www/html
 
@@ -24,9 +16,6 @@ RUN apt update -y && apt upgrade -y \
     && apt install -y php7.4 php-fpm php-mysql mariadb-client wget curl -y \
     && rm -rf /var/lib/apt/lists/*
 
-### REMOVER NO FINAL APENAS PARA TESTES
-RUN apt update && apt install iputils-ping curl -y
-RUN apt update && apt install net-tools
 
 RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
 

@@ -3,17 +3,17 @@
 # Configuração do banco de dados
 wp --allow-root config create \
     --dbname="$DATABASE_NAME" \
-    --dbuser="$DATABASE_USER" \
-    --dbpass="$DATABASE_PASSWORD" \
-    --dbhost="$DATABASE_HOST" \
-    --dbprefix="$DB_PREFIX"
+    --dbuser="$ADMIN_NAME" \
+    --dbpass="$ADMIN_PASSWORD" \
+    --dbhost=mariadb \
+    --dbprefix="wp_"
 
 # Instalação do WordPress
 wp core install --allow-root \
     --path=/var/www/html \
-    --url="$WP_DOMAIN" \
     --title="$WP_TITLE" \
-    --admin_user="$ADMIN_USER" \
+    --url="$DOMAIN" \
+    --admin_user="$ADMIN_NAME" \
     --admin_password="$ADMIN_PASSWORD" \
     --admin_email="$ADMIN_EMAIL"
 

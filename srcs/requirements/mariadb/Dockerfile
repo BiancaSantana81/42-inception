@@ -1,25 +1,22 @@
 FROM debian:oldstable
 
+ARG ADMIN_NAME
+ARG ADMIN_PASSWORD
 ARG DATABASE_NAME
-ARG DATABASE_USER
-ARG DATABASE_PASSWORD
 
-# Atualiza o sistema e instala o MariaDB
 RUN apt update -y && apt upgrade -y \
-    && apt install -y mariadb-server \
+    && apt install mariadb-server -y \
     && rm -rf /var/lib/apt/lists/*
 
-RUN sed -i 's/bind-address\s*= 127.0.0.1/bind-address = 0.0.0.0/' \
-     /etc/mysql/mariadb.conf.d/50-server.cnf
 
-# Criar diretório necessário para o MySQL e definir permissões
 RUN mkdir -p /var/run/mysqld \
-    && chown -R mysql:mysql /var/run/mysqld
+	&& chown -R mysql:mysql /var/run/mysqld \
+	&& chmod 777 /var/run/mysqld
 
-COPY ./conf/run.sh /tmp/run.sh
+COPY cnf/my.cnf /etc/mysql/my.cnf
 
-# Torna o script executável
-RUN chmod +x /tmp/run.sh
+COPY conf/run.sh /tmp/run.sh
 
-# Alterar o CMD para rodar o script de inicialização e manter o contêiner ativo
-CMD ["/bin/bash", "-c", "/tmp/run.sh && tail -f /dev/null"]
+RUN chmod 777 /tmp/run.sh && bash /tmp/run.sh
+
+CMD ["mysqld_safe"]

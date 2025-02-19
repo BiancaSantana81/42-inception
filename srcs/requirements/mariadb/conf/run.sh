@@ -1,13 +1,9 @@
-#!/bin/bash
-
-# Start MariaDB
+#!/usr/bin/env bash
 
 service mariadb start
 
-# Create database and user
-
-mysql -u root -e "
-    CREATE DATABASE IF NOT EXISTS ${DATABASE_NAME};
-    CREATE USER IF NOT EXISTS '${DATABASE_USER}'@'%' IDENTIFIED BY '${DATABASE_PASSWORD}';
-    GRANT ALL PRIVILEGES ON ${DATABASE_NAME}.* TO '${DATABASE_USER}'@'%';
+mariadb -u root -e \
+    "CREATE DATABASE IF NOT EXISTS ${DATABASE_NAME}; \
+    CREATE USER '${ADMIN_NAME}'@'%' IDENTIFIED BY '${ADMIN_PASSWORD}'; \
+    GRANT ALL ON ${DATABASE_NAME}.* TO '${ADMIN_NAME}'@'%' IDENTIFIED BY '${ADMIN_PASSWORD}'; \
     FLUSH PRIVILEGES;"
