@@ -1,15 +1,72 @@
-USER = bsantana
+# variables for Makefile
 
+USER = bsantana
 WORDPRESS_DIRECTORY =/home/$(USER)/data/wordpress
 MARIADB_DIRECTORY = /home/$(USER)/data/mariadb
+COMPOSE_PATH=./srcs/docker-compose.yml
+DOCKER_EXEC=docker compose -f $(COMPOSE_PATH) ## adicionar docker-compose no pc da 42
+#DOCKER_EXEC=$(shell command -v docker-compose >/dev/null 2>&1 && echo "docker-compose" || echo "docker compose") -f $(COMPOSE_PATH)
 
-all: create_directorys
 
-# Alvo para criar o diretório
-create_directorys:
-	@echo "Criando diretório de dados do MariaDB em $(MARIADB_DIRECTORY)..."
-	@sudo mkdir -p $(MARIADB_DIRECTORY)
-	@sudo mkdir -p $(WORDPRESS_DIRECTORY)
-	@echo "Diretório pronto para ser copiado para o contêiner!"
+all: config up
 
-## adicionar regra para baixar o .env de um repo no meu github, regras para build, up clean etc
+# setup para preparar o ambiente antes de subir os contêineres
+
+config:
+
+	@echo "Getting the .env file..."
+	@if [ ! -f ./srcs/.env ]; then \
+		wget -P ./srcs https://raw.githubusercontent.com/BiancaSantana81/42-inception/master/srcs/.env; \
+		else echo ".env file already exists!"; \
+	fi
+
+	@echo "Add bsantana.42.fr in /etc/hosts..."
+		@if ! grep -q "bsantana.42.fr" /etc/hosts; then \
+		echo "127.0.0.1 $(USER).42.fr" | sudo tee -a /etc/hosts > /dev/null; \
+		else echo "bsantana.42.fr already exists in /etc/hosts!"; \
+	fi
+
+	@echo "Creating the data directories..."
+	@if [ ! -d "$(MARIADB_DIRECTORY)" ]; then \
+		sudo mkdir -p $(MARIADB_DIRECTORY); \
+		else echo "MariaDB data directory already exists!"; \
+	fi
+
+	@if [ ! -d "$(WORDPRESS_DIRECTORY)" ]; then \
+		sudo mkdir -p $(WORDPRESS_DIRECTORY); \
+		else echo "Wordpress data directory already exists!"; \
+	fi
+
+build:
+	@echo "Building the containers..."
+	$(DOCKER_EXEC) build
+
+up: build
+	@echo "Starting the containers..."
+	$(DOCKER_EXEC) up -d
+
+down:
+	@echo "Stopping the containers..."
+	$(DOCKER_EXEC) down
+
+ps:
+	@echo "Showing the containers..."
+	$(DOCKER_EXEC) ps
+
+clean:
+	@echo "Cleaning the containers..."
+	$(DOCKER_EXEC) down --rmi all --volumes
+
+fclean: clean
+	@echo "Removing the .env file..."
+	rm ./srcs/.env
+	sudo sed -i '/bsantana\.42\.fr/d' /etc/hosts
+	@echo "Removing the data directories..."
+	@if [ -d "/home/bsantana/data" ]; then \
+		sudo rm -rf /home/bsantana/data; \
+	fi
+	docker system prune -a --volumes -f
+
+re: fclean all
+
+.PHONY: all config build up down ps prune clean fclean re
