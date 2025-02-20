@@ -1,16 +1,12 @@
-# variables for Makefile
-
 USER = bsantana
 WORDPRESS_DIRECTORY =/home/$(USER)/data/wordpress
 MARIADB_DIRECTORY = /home/$(USER)/data/mariadb
 COMPOSE_PATH=./srcs/docker-compose.yml
 DOCKER_EXEC=docker compose -f $(COMPOSE_PATH) ## adicionar docker-compose no pc da 42
-#DOCKER_EXEC=$(shell command -v docker-compose >/dev/null 2>&1 && echo "docker-compose" || echo "docker compose") -f $(COMPOSE_PATH)
-
 
 all: config up
 
-# setup para preparar o ambiente antes de subir os contêineres
+# setup to prepare the environment before the containers go up
 
 config:
 
@@ -37,6 +33,8 @@ config:
 		else echo "Wordpress data directory already exists!"; \
 	fi
 
+## rules to manipulate containers
+
 build:
 	@echo "Building the containers..."
 	$(DOCKER_EXEC) build
@@ -52,6 +50,8 @@ down:
 ps:
 	@echo "Showing the containers..."
 	$(DOCKER_EXEC) ps
+
+## rules to clean the environment and remove the containers
 
 clean:
 	@echo "Cleaning the containers..."
