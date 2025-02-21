@@ -3,6 +3,7 @@ FROM debian:oldstable
 ARG ADMIN_NAME
 ARG ADMIN_PASSWORD
 ARG DATABASE_NAME
+ARG ROOT_PASSWORD
 
 RUN apt update -y && apt upgrade -y \
     && apt install mariadb-server -y \
