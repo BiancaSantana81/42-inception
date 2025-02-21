@@ -9,3 +9,4 @@ mariadb -u root -e \
     FLUSH PRIVILEGES;"
 
 mysqladmin -u root password '${ROOT_PASSWORD}'
+mariadb -u root -e "FLUSH PRIVILEGES;"
