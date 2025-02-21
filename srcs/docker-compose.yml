@@ -1,13 +1,16 @@
+# Sets the version of Docker Compose
 # version: '3.8'
 
-############## NETWORKS ############## 
+############## NETWORKS ##############
 
+# Network to connect all the containers in the project
 networks:
   inception:
     name: inception
 
 ############## VOLUMES ################
 
+# Definition of persistent volumes, ensuring that data is not lost when containers are restarted
 volumes:
   wordpress_data:
     name: wordpress_data
@@ -23,8 +26,9 @@ volumes:
       type: none
       device: /home/bsantana/data/mariadb
 
-##############  SERVICES ############## 
+##############  SERVICES ##############
 
+# Application services, including the MariaDB database, WordPress and the Nginx server
 services:
   mariadb:
     image: mariadb:42project
