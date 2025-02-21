@@ -37,10 +37,12 @@ services:
         - ADMIN_NAME=${ADMIN_NAME}
         - ADMIN_PASSWORD=${ADMIN_PASSWORD}
         - DATABASE_NAME=${DATABASE_NAME}
+        - ROOT_PASSWORD=${ROOT_PASSWORD}
     environment:
       - ADMIN_NAME
       - ADMIN_PASSWORD
       - DATABASE_NAME
+      - ROOT_PASSWORD
     volumes:
       - mariadb_data:/var/lib/mysql
     networks:
