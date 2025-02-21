@@ -8,5 +8,6 @@ mariadb -u root -e \
     GRANT ALL PRIVILEGES ON ${DATABASE_NAME}.* TO '${ADMIN_NAME}'@'%'; \
     FLUSH PRIVILEGES;"
 
+# Set root password
 mysqladmin -u root password '${ROOT_PASSWORD}'
 mariadb -u root -e "FLUSH PRIVILEGES;"
