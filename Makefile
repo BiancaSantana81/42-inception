@@ -2,7 +2,7 @@ USER = bsantana
 WORDPRESS_DIRECTORY =/home/$(USER)/data/wordpress
 MARIADB_DIRECTORY = /home/$(USER)/data/mariadb
 COMPOSE_PATH=./srcs/docker-compose.yml
-DOCKER_EXEC=docker compose -f $(COMPOSE_PATH) ## adicionar docker-compose no pc da 42
+DOCKER_EXEC=docker-compose -f $(COMPOSE_PATH)
 
 all: config up
 
